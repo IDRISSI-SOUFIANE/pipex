@@ -6,7 +6,7 @@
 /*   By: sidrissi <sidrissi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/15 21:58:53 by sidrissi          #+#    #+#             */
-/*   Updated: 2025/02/19 11:44:40 by sidrissi         ###   ########.fr       */
+/*   Updated: 2025/02/21 13:04:04 by sidrissi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	child_process1(char **av, char **env, t_data *data)
 {
 	data->infile = open(av[1], O_RDONLY, 0777);
 	if (data->infile < 0)
-		(close(data->infile), ft_clean(data), perror("Error"));
+		(ft_clean(data), perror("Error"));
 	if (dup2(data->infile, STDIN_FILENO) < 0
 		|| dup2(data->fds[1], STDOUT_FILENO) < 0)
 		(ft_clean(data), perror("Error"));

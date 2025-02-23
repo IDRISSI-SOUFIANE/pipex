@@ -6,7 +6,7 @@
 /*   By: sidrissi <sidrissi@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/20 19:26:51 by sidrissi          #+#    #+#             */
-/*   Updated: 2025/02/20 21:56:24 by sidrissi         ###   ########.fr       */
+/*   Updated: 2025/02/23 11:49:42 by sidrissi         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,22 +32,25 @@ void close_all_pipes(t_data *data)
 void execute_command(int i, char **av, char **env, t_data *data)
 {
     data->cmd = ft_split(av[i + 2], ' ');
-    if (!data->cmd || !data->cmd[0]) {
+    if (!data->cmd || !data->cmd[0])
+    {
         ft_putstr(ERROR, "Invalid command\n");
         exit(1);
     }
-    
-    if (ft_find(data->cmd[0], "/")) {
-        if (access(data->cmd[0], X_OK) == 0)
+    if (ft_find(data->cmd[0], "/."))
+    {
+        if (!access(data->cmd[0], F_OK))
             execve(data->cmd[0], data->cmd, env);
-        ft_putstr(data->cmd[0], ": Permission denied\n");
-    } else {
+            ft_putstr(data->cmd[0], "command not found:");
+    } else
+    {
         data->cmd_path = get_path(data);
-        if (data->cmd_path) {
+        if (data->cmd_path)
+        {
             execve(data->cmd_path, data->cmd, env);
             free(data->cmd_path);
         }
-        ft_putstr(data->cmd[0], ": Command not found\n");
+        ft_putstr(data->cmd[0], "Command not found:");
     }
     ft_free(data->cmd, ft_strlen_p(data->cmd));
     exit(1);
@@ -60,7 +63,7 @@ void read_writ_fd(int i, char **av, char **env, t_data *data)
     else
         dup2(data->fds[i-1][0], STDIN_FILENO);
 
-    if (i == data->n_commands-1)
+    if (i == data->n_commands-1)/*?????*/
         dup2(data->outfile, STDOUT_FILENO);
     else
         dup2(data->fds[i][1], STDOUT_FILENO);
@@ -77,11 +80,13 @@ void execute_logic(int ac, char **av, char **env, t_data *data)
     int i = 0;
     int status;
     
-    while (i < data->n_commands) {
+    while (i < data->n_commands)
+    {
         data->pid = fork();
         if (data->pid == 0)
             read_writ_fd(i, av, env, data);
-        else if (data->pid < 0) {
+        else if (data->pid < 0)
+        {
             perror("Fork failed");
             exit(1);
         }
